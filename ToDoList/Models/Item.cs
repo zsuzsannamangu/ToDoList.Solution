@@ -142,7 +142,7 @@ namespace ToDoList.Models
       }
       //we'll create and return a new Item object with the values we located.
       Item foundItem= new Item(itemDescription, itemId);
-      
+
       conn.Close();
       if (conn != null)
       {
@@ -198,6 +198,37 @@ namespace ToDoList.Models
       }
     }
 
+    //first do that we empty Edit()
+    //once Edit() is written, go to ItemsController.cs and edit route
+    public void Edit(string newDescription)
+    {
+      MySqlConnection conn = DB.Connection();
+      conn.Open();
+      var cmd = conn.CreateCommand() as MySqlCommand;
+      //update the items table where the identity column called ID is the ID of the Item object we are calling the method on
+      cmd.CommandText = @"UPDATE items SET description = @newDescription WHERE id = @searchId;";
+      // declare MySqlParameter objects for both searchId and description. We associate each with the parameterName from the SQL statement (@searchId and @newDescription, respectively).
+      MySqlParameter searchId = new MySqlParameter();
+      searchId.ParameterName = "@searchId";
+      //We declare the Value property of each MySqlParameter as the actual value we'd like inserted into our SQL statement. _id = Item's id property
+      searchId.Value = _id;
+      cmd.Parameters.Add(searchId);
+      MySqlParameter description = new MySqlParameter();
+      description.ParameterName = "@newDescription";
+      //newDescription = updated description value passed into updatedDescription() as an argument
+      description.Value = newDescription;
+      //Add() inserts the two parameters (@newDescription and @searchId) into our SQL statement where their corresponding placeholders reside.
+      cmd.Parameters.Add(description);
+      cmd.ExecuteNonQuery();
+      //reset the Item's _description property on the app side
+      _description = newDescription;
+
+      conn.Close();
+      if (conn != null)
+      {
+        conn.Dispose();
+      }
+    }
 
 
   }

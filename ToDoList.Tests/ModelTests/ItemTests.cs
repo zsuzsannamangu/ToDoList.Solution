@@ -167,5 +167,26 @@ namespace ToDoList.Tests
       Assert.AreEqual(testId, result);
     }
 
+    [TestMethod]
+    public void Edit_UpdatesItemInDatabase_String()
+    {
+      //Arrange
+      //creating and saving an Item
+      string firstDescription = "Walk the Dog";
+      Item testItem = new Item(firstDescription);
+      testItem.Save();
+      string secondDescription = "Mow the lawn";
+
+      //Act
+      //call Edit and pass in a new description
+      testItem.Edit(secondDescription);
+      //locate Item in database
+      string result = Item.Find(testItem.GetId()).GetDescription();
+
+      //Assert
+      //assert that the located Item's description has been successfully changed to "Mow the lawn", if so we know our Edit() is working
+      Assert.AreEqual(secondDescription, result);
+    }
+
   }
 }
